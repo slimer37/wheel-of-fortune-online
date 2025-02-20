@@ -3,6 +3,10 @@ body {
     padding: 0;
     width: 100vw;
     height: 100vh;
+
+    font-family: "Barlow Semi Condensed", serif;
+    font-weight: 400;
+    font-style: normal;
 }
 
 .unselect {
@@ -68,9 +72,7 @@ body {
     vertical-align: middle;
     line-height: normal;
 
-    font-family: "Barlow Semi Condensed", serif;
     font-weight: 700;
-    font-style: normal;
 
     font-size: 5vw;
 }
@@ -83,8 +85,30 @@ body {
     background-color: black;
     color: white;
     padding: 10px;
+}
+
+#controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    background-color: black;
+    color: white;
+    padding: 10px;
+}
+
+.button {
+    border: none;
 
     font-family: "Barlow Semi Condensed", serif;
     font-weight: 400;
     font-style: normal;
+}
+
+.button:hover {
+    background-color: lightgray;
+}
+
+.button:active {
+    background-color: gray;
 }

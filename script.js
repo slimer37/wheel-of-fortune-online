@@ -4,12 +4,20 @@ let selectedLetter = null;
 /** @type {HTMLCanvasElement} */
 let infobox;
 
+let controlsPanel;
+
+let letterList = [];
+
 function loadBoard() {
     const letter = document.getElementById("letter");
 
     infobox = document.getElementById("infobox");
 
     infobox.innerText = '';
+
+    controlsPanel = document.getElementById("controls");
+
+    controlsPanel.style.visibility = 'visible';
 
     letter.firstElementChild.innerText = '';
 
@@ -21,6 +29,8 @@ function loadBoard() {
 
         if (i == 13 || i == 14 * 3 || i == 14 * 4 - 1) {
             newLetter.style.visibility = 'hidden';
+        } else {
+            letterList.push(newLetter);
         }
     }
 
@@ -51,6 +61,15 @@ function setupLetter(letter) {
 function onKeyPress(event) {
     console.log(event.key)
 
+    if (event.key == "`") {
+        if (controlsPanel.style.visibility == 'visible') {
+            controlsPanel.style.visibility = 'hidden';
+        } else {
+            controlsPanel.style.visibility = 'visible';
+        }
+        return;
+    }
+
     if (isSettingLetter && (event.key === "Escape" || event.key === "Backspace")) {
         stopSettingLetter();
     }
@@ -79,6 +98,14 @@ function stopSettingLetter() {
     isSettingLetter = false;
 
     infobox.innerText = '';
+}
+
+function hideSolution() {
+    letterList.forEach(letter => letter.firstElementChild.style.color = 'white');
+}
+
+function revealSolution() {
+    letterList.forEach(letter => letter.firstElementChild.style.removeProperty('color'));
 }
 
 window.onload = loadBoard;
