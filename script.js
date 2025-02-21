@@ -60,6 +60,14 @@ function setupLetter(letter) {
     letter.classList.add("blank-letter");
 }
 
+function revealMatchingLetters(targetLetter) {
+    letterList.forEach(letter => {
+        if (letter.firstElementChild.innerText === targetLetter) {
+            letter.firstElementChild.style.removeProperty('color');
+        }
+    });
+}
+
 function onKeyPress(event) {
     console.log(event.key)
 
@@ -88,6 +96,8 @@ function onKeyPress(event) {
         }
 
         stopSettingLetter();
+    } else if (!isSettingLetter) {
+        revealMatchingLetters(event.key.toUpperCase());
     }
 }
 
