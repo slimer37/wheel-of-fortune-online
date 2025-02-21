@@ -36,6 +36,8 @@ function loadBoard() {
 
     letter.style.visibility = 'hidden';
     setupLetter(letter);
+
+    document.getElementById('loading-screen').style.display = 'none';
 }
 
 function startSettingLetter(target) {

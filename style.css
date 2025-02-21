@@ -9,6 +9,25 @@ body {
     font-style: normal;
 }
 
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+
+    background-color: black;
+    color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-text {
+    font-size: 20pt;
+}
+
 .unselect {
     -webkit-user-select: none; /* Safari */        
     -moz-user-select: none; /* Firefox */
