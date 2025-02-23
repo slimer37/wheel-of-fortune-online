@@ -134,7 +134,7 @@ function onKeyPress(event) {
         return;
     }
 
-    if (isSettingLetter && event.key === "Escape") {
+    if (isSettingLetter && (event.key === "Escape" || event.key === "Enter")) {
         stopSettingLetter();
     }
 
@@ -149,7 +149,12 @@ function onKeyPress(event) {
             selectedLetter.classList.remove("blank-letter");
         }
 
-        stopSettingLetter();
+        if (letterList.indexOf(selectedLetter) < letterList.length - 1) {
+            let next = letterList[letterList.indexOf(selectedLetter) + 1];
+            startSettingLetter(next);
+        } else {
+            stopSettingLetter();
+        }
     } else if (!isSettingLetter) {
         revealMatchingLetters(event.key.toUpperCase());
     }
