@@ -178,6 +178,14 @@ function revealSolution() {
     letterList.forEach(letter => letter.firstElementChild.style.removeProperty('color'));
 }
 
+function resetBoard() {
+    letterList.forEach(letter => {
+        letter.firstElementChild.innerText = '';
+        letter.classList.add("blank-letter");
+        revealLetter(letter);
+    });
+}
+
 window.onload = loadBoard;
 
 document.onkeydown = onKeyPress;
