@@ -134,7 +134,7 @@ function onKeyPress(event) {
         return;
     }
 
-    if (isSettingLetter && (event.key === "Escape" || event.key === "Backspace")) {
+    if (isSettingLetter && event.key === "Escape") {
         stopSettingLetter();
     }
 
