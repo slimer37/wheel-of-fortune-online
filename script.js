@@ -173,7 +173,7 @@ function stopSettingLetter() {
 
 function hideSolution() {
     letterList.forEach(letter => {
-        if (!letter.classList.contains('blank-letter')) {
+        if (!letter.classList.contains('blank-letter') && !/[0-9-]/.test(letter.firstElementChild.innerText)) {
             letter.firstElementChild.style.color = 'white';
         }
     });
