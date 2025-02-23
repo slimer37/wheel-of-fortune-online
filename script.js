@@ -163,7 +163,11 @@ function stopSettingLetter() {
 }
 
 function hideSolution() {
-    letterList.forEach(letter => letter.firstElementChild.style.color = 'white');
+    letterList.forEach(letter => {
+        if (!letter.classList.contains('blank-letter')) {
+            letter.firstElementChild.style.color = 'white';
+        }
+    });
 }
 
 function revealSolution() {
