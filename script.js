@@ -123,6 +123,8 @@ function revealMatchingLetters(targetLetter) {
 }
 
 function onKeyPress(event) {
+    if (event.ctrlKey) return;
+
     console.log(event.key)
 
     if (event.key == "`") {
