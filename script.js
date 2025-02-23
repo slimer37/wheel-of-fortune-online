@@ -8,6 +8,11 @@ let controlsPanel;
 
 let letterList = [];
 
+const dingSfx = new Audio('assets/ding.wav');
+const buzzerSfx = new Audio('assets/buzzer.mp3');
+const dingLength = 1.2 * 1000;
+const revealTimeAfterDing = 1.5 * 1000;
+
 function loadBoard() {
     const letter = document.getElementById("letter");
 
@@ -53,19 +58,64 @@ function startSettingLetter(target) {
 }
 
 function setupLetter(letter) {
-    letter.onclick = function() {
+    letter.onclick = function () {
         startSettingLetter(letter);
     }
 
     letter.classList.add("blank-letter");
 }
 
+function blueLetter(letter) {
+    letter.style.backgroundColor = 'blue';
+    letter.firstElementChild.style.color = 'blue';
+
+    dingSfx.currentTime = 0;
+    dingSfx.play();
+}
+
+function revealLetter(letter) {
+    letter.style.removeProperty('background-color');
+    letter.firstElementChild.style.removeProperty('color');
+}
+
+// https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+function shuffle(array) {
+    let currentIndex = array.length;
+
+    // While there remain elements to shuffle...
+    while (currentIndex != 0) {
+
+        // Pick a remaining element...
+        let randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
+}
+
 function revealMatchingLetters(targetLetter) {
-    letterList.forEach(letter => {
-        if (letter.firstElementChild.innerText === targetLetter) {
-            letter.firstElementChild.style.removeProperty('color');
+    let i = 0;
+    let foundAny = false;
+    
+    let shuffledLetters = shuffle(letterList.slice());
+
+    shuffledLetters.forEach(letter => {
+        if (letter.firstElementChild.innerText === targetLetter && letter.firstElementChild.style.color == 'white') {
+            window.setTimeout(() => blueLetter(letter), i * dingLength);
+            window.setTimeout(() => revealLetter(letter), i * dingLength + revealTimeAfterDing);
+            i++;
+            foundAny = true;
         }
     });
+
+    if (!foundAny) {
+        buzzerSfx.currentTime = 0;
+        buzzerSfx.play();
+    }
 }
 
 function onKeyPress(event) {
@@ -85,7 +135,7 @@ function onKeyPress(event) {
     }
 
     if (event.key.length > 1 || !/[a-zA-Z0-9- ]/.test(event.key)) return;
-    
+
     if (isSettingLetter && selectedLetter != null) {
         selectedLetter.firstElementChild.innerText = event.key.toUpperCase();
 
