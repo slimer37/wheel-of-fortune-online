@@ -68,9 +68,9 @@ function startSettingLetter(target) {
 }
 
 function setupLetter(letter) {
-    letter.onclick = function () {
+    letter.addEventListener('click', () => {
         startSettingLetter(letter);
-    }
+    });
 
     letter.classList.add("blank-letter");
 }
