@@ -45,6 +45,16 @@ function loadBoard() {
     document.getElementById('loading-screen').style.display = 'none';
 }
 
+function toggleMute() {
+    if (dingSfx.muted) {
+        dingSfx.muted = false;
+        buzzerSfx.muted = false;
+    } else {
+        dingSfx.muted = true;
+        buzzerSfx.muted = true;
+    }
+}
+
 function startSettingLetter(target) {
     if (selectedLetter != null) {
         selectedLetter.classList.remove("selected-letter");
