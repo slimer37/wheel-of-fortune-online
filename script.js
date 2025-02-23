@@ -116,6 +116,10 @@ function revealMatchingLetters(targetLetter) {
         buzzerSfx.currentTime = 0;
         buzzerSfx.play();
     }
+
+    infobox.innerText = `Revealing ${i} ${targetLetter}'s...`;
+
+    window.setTimeout(() => infobox.innerText = '', (i - 1) * dingLength + revealTimeAfterDing);
 }
 
 function onKeyPress(event) {
