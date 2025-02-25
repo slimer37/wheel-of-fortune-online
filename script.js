@@ -7,13 +7,16 @@ let infobox;
 let controlsPanel;
 
 let letterList = [];
+let slotElements = [];
+
+let savedPuzzles = {};
 
 const dingSfx = new Audio('assets/ding.wav');
 const buzzerSfx = new Audio('assets/buzzer.mp3');
 const dingLength = 1.2 * 1000;
 const revealTimeAfterDing = 1.5 * 1000;
 
-function loadBoard() {
+function setupBoard() {
     const letter = document.getElementById("letter");
 
     infobox = document.getElementById("infobox");
@@ -41,8 +44,55 @@ function loadBoard() {
 
     letter.style.visibility = 'hidden';
     setupLetter(letter);
+}
 
-    document.getElementById('loading-screen').style.display = 'none';
+function createSaveSlots() {
+
+    function setupSlot(slot, index) {
+        slotElements.push(slot);
+        
+        slot.firstElementChild.innerHTML = `${index + 1}:`;
+        slot.children[1].addEventListener('click', () => saveBoard(index));
+        slot.children[2].addEventListener('click', () => loadBoard(index));
+    }
+
+    const saveContainer = document.getElementById('save-container');
+    const templateSlot = saveContainer.firstElementChild;
+
+    setupSlot(templateSlot, 0);
+
+    for (let i = 1; i < 10; i++) {
+        const newSlot = templateSlot.cloneNode(true);
+        saveContainer.appendChild(newSlot);
+        
+        setupSlot(newSlot, i);
+    }
+}
+
+function saveBoard(key) {
+    let anyFilled = false;
+
+    savedPuzzles[key] = letterList.map(letter => {
+        const char = letter.firstElementChild.innerText;
+
+        if (char == '') return ' ';
+
+        anyFilled = true;
+
+        return char;
+    });
+
+    if (anyFilled) {
+        slotElements[key].classList.add('filled-slot');
+    } else {
+        slotElements[key].classList.remove('filled-slot');
+    }
+}
+
+function loadBoard(key) {
+    savedPuzzles[key].forEach((letter, i) => {
+        assignLetter(letterList[i], letter);
+    });
 }
 
 function toggleMute() {
@@ -132,6 +182,16 @@ function revealMatchingLetters(targetLetter) {
     window.setTimeout(() => infobox.innerText = '', (i - 1) * dingLength + revealTimeAfterDing);
 }
 
+function assignLetter(letterElement, char) {
+    letterElement.firstElementChild.innerText = char;
+
+    if (char == ' ') {
+        letterElement.classList.add("blank-letter");
+    } else {
+        letterElement.classList.remove("blank-letter");
+    }
+}
+
 function onKeyPress(event) {
     if (event.ctrlKey) return;
 
@@ -150,16 +210,10 @@ function onKeyPress(event) {
         stopSettingLetter();
     }
 
-    if (event.key.length > 1 || !/[a-zA-Z0-9- ]/.test(event.key)) return;
+    if (event.key.length > 1) return;
 
     if (isSettingLetter && selectedLetter != null) {
-        selectedLetter.firstElementChild.innerText = event.key.toUpperCase();
-
-        if (event.key == ' ') {
-            selectedLetter.classList.add("blank-letter");
-        } else {
-            selectedLetter.classList.remove("blank-letter");
-        }
+        assignLetter(selectedLetter, event.key.toUpperCase());
 
         if (letterList.indexOf(selectedLetter) < letterList.length - 1) {
             let next = letterList[letterList.indexOf(selectedLetter) + 1];
@@ -185,7 +239,7 @@ function stopSettingLetter() {
 
 function hideSolution() {
     letterList.forEach(letter => {
-        if (!letter.classList.contains('blank-letter') && !/[0-9-]/.test(letter.firstElementChild.innerText)) {
+        if (!letter.classList.contains('blank-letter') && /[A-Z]/.test(letter.firstElementChild.innerText)) {
             letter.firstElementChild.style.color = 'white';
         }
     });
@@ -203,6 +257,11 @@ function resetBoard() {
     });
 }
 
-window.onload = loadBoard;
+window.onload = function() {
+    createSaveSlots();
+    setupBoard();
+
+    document.getElementById('loading-screen').style.display = 'none';
+};
 
 document.onkeydown = onKeyPress;

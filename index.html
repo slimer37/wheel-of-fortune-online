@@ -18,17 +18,28 @@
     <div class="board" id="board">
         <div class="letter-box unselect" id="letter"><div class="letter">A</div></div>
     </div>
-    <div id="infobox">Information</div>
     <div id="controls">
-        <p>Click on letter to select it, then press any letter</p>
-        <p>Escape/Backspace/Space to remove letter</p>
-        <p>Backtick (`) to toggle this panel</p>
-        <input class="button" type="button" value="Hide Solution" onclick="hideSolution()">
-        <input class="button" type="button" value="Reveal Solution" onclick="revealSolution()">
-        <input class="button" type="button" value="Reset" onclick="resetBoard()">
-        <br>
-        <input type="checkbox" id="mute-toggle" style="margin-top: 0.5rem" onclick="toggleMute()">
-        <label class="label" for="mute-toggle">Mute</label>
+        <div id="save-container">
+            <div class="save-slot">
+                <span>1:</span>
+                <div class="button save-btn">S</div>
+                <div class="button save-btn">L</div>
+            </div>
+        </div>
+        <div>
+            <p>
+                Click on a space, then start typing<br>
+                Escape to exit editing mode<br>
+                Backtick (`) to toggle all panels
+            </p>
+            <input class="button" type="button" value="Hide Solution" onclick="hideSolution()">
+            <input class="button" type="button" value="Reveal Solution" onclick="revealSolution()">
+            <input class="button" type="button" value="Reset" onclick="resetBoard()">
+            <br>
+            <input type="checkbox" id="mute-toggle" style="margin-top: 0.5rem" onclick="toggleMute()">
+            <label class="label" for="mute-toggle">Mute</label>
+        </div>
     </div>
+    <div id="infobox">Information</div>
 </body>
 </html>
