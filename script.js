@@ -150,7 +150,7 @@ function onKeyPress(event) {
         stopSettingLetter();
     }
 
-    if (event.key.length > 1 || !/[a-zA-Z0-9- ]/.test(event.key)) return;
+    if (event.key.length > 1) return;
 
     if (isSettingLetter && selectedLetter != null) {
         selectedLetter.firstElementChild.innerText = event.key.toUpperCase();
@@ -185,7 +185,7 @@ function stopSettingLetter() {
 
 function hideSolution() {
     letterList.forEach(letter => {
-        if (!letter.classList.contains('blank-letter') && !/[0-9-]/.test(letter.firstElementChild.innerText)) {
+        if (!letter.classList.contains('blank-letter') && /[A-Z]/.test(letter.firstElementChild.innerText)) {
             letter.firstElementChild.style.color = 'white';
         }
     });
