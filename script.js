@@ -84,6 +84,8 @@ function saveBoard(key) {
 
     if (anyFilled) {
         slotElements[key].classList.add('filled-slot');
+    } else {
+        slotElements[key].classList.remove('filled-slot');
     }
 }
 
