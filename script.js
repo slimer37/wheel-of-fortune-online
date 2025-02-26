@@ -9,23 +9,46 @@ let controlsPanel;
 let letterList = [];
 let slotElements = [];
 
-let savedPuzzles = new Array(10).fill('');
-
 const dingSfx = new Audio('assets/ding.wav');
 const buzzerSfx = new Audio('assets/buzzer.mp3');
 const dingLength = 1.2 * 1000;
 const revealTimeAfterDing = 1.5 * 1000;
 
-function loadSavedPuzzlesFromCookies() {
-    const puzzlesInCookie = document.cookie.split('\n');
+// https://stackoverflow.com/questions/14573223/set-cookie-and-get-cookie-with-javascript
+function setCookie(name,value,days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
 
-    puzzlesInCookie.forEach((puzzle, i) => {
-        savedPuzzles[i] = puzzle;
-        
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+
+function eraseCookie(name) {   
+    document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
+function checkPuzzlesInCookies() {
+    for (let i = 0; i < 10; i++) {
+        let puzzle = getCookie(`puzzle${i}`);
+        if (puzzle === null) continue;
+        puzzle = puzzle.substring(1, puzzle.length - 1);
         if (puzzle.trim() != '') {
             slotElements[i].classList.add('filled-slot');
         }
-    });
+    }
 }
 
 function savePuzzlesToCookies() {
@@ -92,21 +115,17 @@ function createSaveSlots() {
 }
 
 function saveBoard(key) {
-    let anyFilled = false;
-
-    savedPuzzles[key] = letterList.map(letter => {
+    let puzzle = letterList.map(letter => {
         const char = letter.firstElementChild.innerText;
 
         if (char == '') return ' ';
 
-        anyFilled = true;
-
         return char;
     }).join('');
 
-    savePuzzlesToCookies();
+    setCookie(`puzzle${key}`, `"${puzzle}"`, 365);
 
-    if (anyFilled) {
+    if (puzzle.trim() != '') {
         slotElements[key].classList.add('filled-slot');
     } else {
         slotElements[key].classList.remove('filled-slot');
@@ -114,8 +133,13 @@ function saveBoard(key) {
 }
 
 function loadBoard(key) {
-    for (let i = 0; i < savedPuzzles[key].length; i++) {
-        assignLetter(letterList[i], savedPuzzles[key][i]);
+    let puzzle = getCookie(`puzzle${key}`);
+    puzzle = puzzle.substring(1, puzzle.length - 1);
+
+    if (puzzle === null) return;
+
+    for (let i = 0; i < puzzle.length; i++) {
+        assignLetter(letterList[i], puzzle[i]);
     }
 }
 
@@ -282,8 +306,8 @@ function resetBoard() {
 }
 
 window.onload = function() {
-    loadSavedPuzzlesFromCookies();
     createSaveSlots();
+    checkPuzzlesInCookies();
     setupBoard();
 
     document.getElementById('loading-screen').style.display = 'none';
