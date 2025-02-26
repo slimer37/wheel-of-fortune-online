@@ -9,12 +9,34 @@ let controlsPanel;
 let letterList = [];
 let slotElements = [];
 
-let savedPuzzles = {};
+let savedPuzzles = new Array(10).fill('');
 
 const dingSfx = new Audio('assets/ding.wav');
 const buzzerSfx = new Audio('assets/buzzer.mp3');
 const dingLength = 1.2 * 1000;
 const revealTimeAfterDing = 1.5 * 1000;
+
+function loadSavedPuzzlesFromCookies() {
+    const puzzlesInCookie = document.cookie.split('\n');
+
+    puzzlesInCookie.forEach((puzzle, i) => {
+        savedPuzzles[i] = puzzle;
+        
+        if (puzzle.trim() != '') {
+            slotElements[i].classList.add('filled-slot');
+        }
+    });
+}
+
+function savePuzzlesToCookies() {
+    let cookie = '';
+
+    savedPuzzles.forEach(puzzle => {
+        cookie += puzzle + '\n';
+    });
+
+    document.cookie = cookie;
+}
 
 function setupBoard() {
     const letter = document.getElementById("letter");
@@ -80,7 +102,9 @@ function saveBoard(key) {
         anyFilled = true;
 
         return char;
-    });
+    }).join('');
+
+    savePuzzlesToCookies();
 
     if (anyFilled) {
         slotElements[key].classList.add('filled-slot');
@@ -90,9 +114,9 @@ function saveBoard(key) {
 }
 
 function loadBoard(key) {
-    savedPuzzles[key].forEach((letter, i) => {
-        assignLetter(letterList[i], letter);
-    });
+    for (let i = 0; i < savedPuzzles[key].length; i++) {
+        assignLetter(letterList[i], savedPuzzles[key][i]);
+    }
 }
 
 function toggleMute() {
@@ -258,6 +282,7 @@ function resetBoard() {
 }
 
 window.onload = function() {
+    loadSavedPuzzlesFromCookies();
     createSaveSlots();
     setupBoard();
 
