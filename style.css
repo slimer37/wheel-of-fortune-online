@@ -170,3 +170,43 @@ body {
 .filled-slot {
     font-weight: bold;
 }
+
+.category-banner {
+    background-image: url('assets/category_banner.png');
+    background-size: contain;
+
+    position: absolute;
+    width: 60vw;
+    height: 6vw;
+    bottom: 5vh;
+    margin: 0 20vw;
+
+    display: flex;
+
+    justify-content: center;
+    align-content: center;
+}
+
+#category-label::placeholder {
+    opacity: 0.8;
+    text-shadow: none;
+}
+
+#category-label {
+    background: none;
+    outline: none;
+    border: none;
+
+    font: inherit;
+    font-weight: bold;
+    font-size: 2vw;
+    text-transform: uppercase;
+
+    text-shadow: 0 0 5px black;
+
+    width: 100%;
+
+    text-align: center;
+
+    color: white;
+}
