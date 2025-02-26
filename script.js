@@ -3,8 +3,9 @@ let isSettingLetter = false;
 let selectedLetter = null;
 /** @type {HTMLCanvasElement} */
 let infobox;
-
 let controlsPanel;
+/** @type {HTMLInputElement} */
+let categoryLabel;
 
 let letterList = [];
 let slotElements = [];
@@ -89,6 +90,8 @@ function setupBoard() {
 
     letter.style.visibility = 'hidden';
     setupLetter(letter);
+
+    categoryLabel = document.getElementById('category-label');
 }
 
 function createSaveSlots() {
@@ -130,6 +133,8 @@ function saveBoard(key) {
     } else {
         slotElements[key].classList.remove('filled-slot');
     }
+
+    setCookie(`category${key}`, categoryLabel.value, 365);
 }
 
 function loadBoard(key) {
@@ -141,6 +146,8 @@ function loadBoard(key) {
     for (let i = 0; i < puzzle.length; i++) {
         assignLetter(letterList[i], puzzle[i]);
     }
+
+    categoryLabel.value = getCookie(`category${key}`);
 }
 
 function toggleMute() {
@@ -243,6 +250,8 @@ function assignLetter(letterElement, char) {
 function onKeyPress(event) {
     if (event.ctrlKey) return;
 
+    if (document.activeElement === categoryLabel) return;
+
     console.log(event.key)
 
     if (event.key == "`") {
@@ -302,6 +311,8 @@ function resetBoard() {
         letter.firstElementChild.innerText = '';
         letter.classList.add("blank-letter");
         revealLetter(letter);
+
+        categoryLabel.value = '';
     });
 }
 
