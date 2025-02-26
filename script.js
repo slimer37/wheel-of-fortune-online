@@ -3,18 +3,64 @@ let isSettingLetter = false;
 let selectedLetter = null;
 /** @type {HTMLCanvasElement} */
 let infobox;
-
 let controlsPanel;
+/** @type {HTMLInputElement} */
+let categoryLabel;
 
 let letterList = [];
 let slotElements = [];
-
-let savedPuzzles = {};
 
 const dingSfx = new Audio('assets/ding.wav');
 const buzzerSfx = new Audio('assets/buzzer.mp3');
 const dingLength = 1.2 * 1000;
 const revealTimeAfterDing = 1.5 * 1000;
+
+// https://stackoverflow.com/questions/14573223/set-cookie-and-get-cookie-with-javascript
+function setCookie(name,value,days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+
+function eraseCookie(name) {   
+    document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
+function checkPuzzlesInCookies() {
+    for (let i = 0; i < 10; i++) {
+        let puzzle = getCookie(`puzzle${i}`);
+        if (puzzle === null) continue;
+        puzzle = puzzle.substring(1, puzzle.length - 1);
+        if (puzzle.trim() != '') {
+            slotElements[i].classList.add('filled-slot');
+        }
+    }
+}
+
+function savePuzzlesToCookies() {
+    let cookie = '';
+
+    savedPuzzles.forEach(puzzle => {
+        cookie += puzzle + '\n';
+    });
+
+    document.cookie = cookie;
+}
 
 function setupBoard() {
     const letter = document.getElementById("letter");
@@ -44,6 +90,8 @@ function setupBoard() {
 
     letter.style.visibility = 'hidden';
     setupLetter(letter);
+
+    categoryLabel = document.getElementById('category-label');
 }
 
 function createSaveSlots() {
@@ -70,29 +118,36 @@ function createSaveSlots() {
 }
 
 function saveBoard(key) {
-    let anyFilled = false;
-
-    savedPuzzles[key] = letterList.map(letter => {
+    let puzzle = letterList.map(letter => {
         const char = letter.firstElementChild.innerText;
 
         if (char == '') return ' ';
 
-        anyFilled = true;
-
         return char;
-    });
+    }).join('');
 
-    if (anyFilled) {
+    setCookie(`puzzle${key}`, `"${puzzle}"`, 365);
+
+    if (puzzle.trim() != '') {
         slotElements[key].classList.add('filled-slot');
     } else {
         slotElements[key].classList.remove('filled-slot');
     }
+
+    setCookie(`category${key}`, categoryLabel.value, 365);
 }
 
 function loadBoard(key) {
-    savedPuzzles[key].forEach((letter, i) => {
-        assignLetter(letterList[i], letter);
-    });
+    let puzzle = getCookie(`puzzle${key}`);
+    puzzle = puzzle.substring(1, puzzle.length - 1);
+
+    if (puzzle === null) return;
+
+    for (let i = 0; i < puzzle.length; i++) {
+        assignLetter(letterList[i], puzzle[i]);
+    }
+
+    categoryLabel.value = getCookie(`category${key}`);
 }
 
 function toggleMute() {
@@ -195,6 +250,8 @@ function assignLetter(letterElement, char) {
 function onKeyPress(event) {
     if (event.ctrlKey) return;
 
+    if (document.activeElement === categoryLabel) return;
+
     console.log(event.key)
 
     if (event.key == "`") {
@@ -254,11 +311,14 @@ function resetBoard() {
         letter.firstElementChild.innerText = '';
         letter.classList.add("blank-letter");
         revealLetter(letter);
+
+        categoryLabel.value = '';
     });
 }
 
 window.onload = function() {
     createSaveSlots();
+    checkPuzzlesInCookies();
     setupBoard();
 
     document.getElementById('loading-screen').style.display = 'none';
