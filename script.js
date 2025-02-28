@@ -142,6 +142,16 @@ function saveBoard(key) {
     setCookie(`category${key}`, categoryLabel.value, 365);
 }
 
+function animateBanner() {
+    const container = categoryLabel.parentElement;
+
+    container.style.transition = 'none';
+    container.style.width = 0;
+    void container.offsetWidth;
+    container.style.removeProperty('width');
+    container.style.transition = 'width 1s ease-out';
+}
+
 function loadBoard(key) {
     let puzzle = getCookie(`puzzle${key}`);
 
@@ -156,6 +166,8 @@ function loadBoard(key) {
     }
 
     categoryLabel.value = getCookie(`category${key}`);
+
+    animateBanner();
 
     if (document.getElementById('load-hidden-toggle').checked) {
         revealSfx.currentTime = 0;
