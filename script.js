@@ -104,7 +104,7 @@ function createSaveSlots() {
         slot.children[2].addEventListener('click', () => loadBoard(index));
     }
 
-    const saveContainer = document.getElementById('save-container');
+    const saveContainer = document.getElementById('save-slot-container');
     const templateSlot = saveContainer.firstElementChild;
 
     setupSlot(templateSlot, 0);
@@ -149,7 +149,11 @@ function loadBoard(key) {
 
     categoryLabel.value = getCookie(`category${key}`);
 
-    hideSolution();
+    if (document.getElementById('load-hidden-toggle').checked) {
+        hideSolution();
+    } else {
+        revealSolution();
+    }
 }
 
 function toggleMute() {

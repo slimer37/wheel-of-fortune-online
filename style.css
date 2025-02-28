@@ -132,15 +132,26 @@ body {
     background-color: gray;
 }
 
-#save-container {
+.save-container {
     position: fixed;
     top: 0;
     right: 0;
     width: 55px;
     height: 100vh;
 
+    padding: 0 10px;
+
     background-color: rgba(0, 0, 0, 0.5);
 
+    display: flex;
+    flex-direction: column;
+    
+    justify-content: center;
+    align-items: center;
+}
+
+#save-slot-container {
+    width: 100%;
     display: flex;
     flex-direction: column;
     
