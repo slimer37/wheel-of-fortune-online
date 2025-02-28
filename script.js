@@ -20,6 +20,8 @@ let muted = false;
 const dingLength = 1.2 * 1000;
 const revealTimeAfterDing = 1.5 * 1000;
 
+let timeouts = [];
+
 // https://stackoverflow.com/questions/14573223/set-cookie-and-get-cookie-with-javascript
 function setCookie(name,value,days) {
     var expires = "";
@@ -161,6 +163,11 @@ function loadBoard(key) {
 
     if (puzzle.trim() == '') return;
 
+    timeouts.forEach(timeout => window.clearTimeout(timeout));
+    timeouts.length = 0;
+
+    resetBoard();
+
     for (let i = 0; i < puzzle.length; i++) {
         assignLetter(letterList[i], puzzle[i]);
     }
@@ -235,6 +242,10 @@ function shuffle(array) {
     return array;
 }
 
+function clearInfo() {
+    infobox.innerText = '';
+}
+
 function revealMatchingLetters(targetLetter) {
     let i = 0;
     let foundAny = false;
@@ -243,8 +254,8 @@ function revealMatchingLetters(targetLetter) {
 
     shuffledLetters.forEach(letter => {
         if (letter.firstElementChild.innerText === targetLetter && letter.firstElementChild.style.color == 'white') {
-            window.setTimeout(() => blueLetter(letter), i * dingLength);
-            window.setTimeout(() => revealLetter(letter), i * dingLength + revealTimeAfterDing);
+            timeouts.push(window.setTimeout(() => blueLetter(letter), i * dingLength));
+            timeouts.push(window.setTimeout(() => revealLetter(letter), i * dingLength + revealTimeAfterDing));
             i++;
             foundAny = true;
         }
@@ -257,7 +268,7 @@ function revealMatchingLetters(targetLetter) {
 
     infobox.innerText = `Revealing ${i} ${targetLetter}'s...`;
 
-    window.setTimeout(() => infobox.innerText = '', (i - 1) * dingLength + revealTimeAfterDing);
+    timeouts.push(window.setTimeout(clearInfo, (i - 1) * dingLength + revealTimeAfterDing));
 }
 
 function assignLetter(letterElement, char) {
