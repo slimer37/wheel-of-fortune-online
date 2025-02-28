@@ -18,15 +18,23 @@
     <div class="board" id="board">
         <div class="letter-box unselect" id="letter"><div class="letter">A</div></div>
     </div>
-    <div class="category-banner">
-        <input type="text" id="category-label" placeholder="Type Category Here...">
+    <div class="banner-container">
+        <div class="category-banner">
+            <input type="text" id="category-label" placeholder="Type Category Here...">
+        </div>
     </div>
     <div id="controls">
-        <div id="save-container">
-            <div class="save-slot">
-                <span>1:</span>
-                <div class="button save-btn">S</div>
-                <div class="button save-btn">L</div>
+        <div class="save-container">
+            <div id="save-slot-container">
+                <div class="save-slot">
+                    <span>1:</span>
+                    <div class="button save-btn">S</div>
+                    <div class="button save-btn">L</div>
+                </div>
+            </div>
+            <div>
+                <input type="checkbox" id="load-hidden-toggle" checked>
+                <label class="label" for="load-hidden-toggle">Load Hidden</label>
             </div>
         </div>
         <div>
@@ -39,10 +47,13 @@
             <input class="button" type="button" value="Reveal Solution" onclick="revealSolution()">
             <input class="button" type="button" value="Reset" onclick="resetBoard()">
             <br>
-            <input type="checkbox" id="mute-toggle" style="margin-top: 0.5rem" onclick="toggleMute()">
-            <label class="label" for="mute-toggle">Mute</label>
+            <div style="margin-top: 0.5rem">
+                <input type="checkbox" id="mute-toggle" onclick="toggleMute()">
+                <label class="label" for="mute-toggle">Mute</label>
+            </div>
         </div>
     </div>
     <div id="infobox">Information</div>
+    <a class="version-text" href="https://github.com/slimer37/wheel-of-fortune-online">v1.0 by slimer37</a>
 </body>
 </html>

@@ -12,8 +12,15 @@ let slotElements = [];
 
 const dingSfx = new Audio('assets/ding.wav');
 const buzzerSfx = new Audio('assets/buzzer.mp3');
+const revealSfx = new Audio('assets/puzzlereveal.mp3');
+
+const sounds = [dingSfx, buzzerSfx, revealSfx];
+let muted = false;
+
 const dingLength = 1.2 * 1000;
 const revealTimeAfterDing = 1.5 * 1000;
+
+let timeouts = [];
 
 // https://stackoverflow.com/questions/14573223/set-cookie-and-get-cookie-with-javascript
 function setCookie(name,value,days) {
@@ -104,7 +111,7 @@ function createSaveSlots() {
         slot.children[2].addEventListener('click', () => loadBoard(index));
     }
 
-    const saveContainer = document.getElementById('save-container');
+    const saveContainer = document.getElementById('save-slot-container');
     const templateSlot = saveContainer.firstElementChild;
 
     setupSlot(templateSlot, 0);
@@ -137,27 +144,50 @@ function saveBoard(key) {
     setCookie(`category${key}`, categoryLabel.value, 365);
 }
 
+function animateBanner() {
+    const container = categoryLabel.parentElement;
+
+    container.style.transition = 'none';
+    container.style.width = 0;
+    void container.offsetWidth;
+    container.style.removeProperty('width');
+    container.style.transition = 'width 1s ease-out';
+}
+
 function loadBoard(key) {
     let puzzle = getCookie(`puzzle${key}`);
-    puzzle = puzzle.substring(1, puzzle.length - 1);
 
     if (puzzle === null) return;
+    
+    puzzle = puzzle.substring(1, puzzle.length - 1);
+
+    if (puzzle.trim() == '') return;
+
+    timeouts.forEach(timeout => window.clearTimeout(timeout));
+    timeouts.length = 0;
+
+    resetBoard();
 
     for (let i = 0; i < puzzle.length; i++) {
         assignLetter(letterList[i], puzzle[i]);
     }
 
     categoryLabel.value = getCookie(`category${key}`);
+
+    animateBanner();
+
+    if (document.getElementById('load-hidden-toggle').checked) {
+        revealSfx.currentTime = 0;
+        revealSfx.play();
+        hideSolution();
+    } else {
+        revealSolution();
+    }
 }
 
 function toggleMute() {
-    if (dingSfx.muted) {
-        dingSfx.muted = false;
-        buzzerSfx.muted = false;
-    } else {
-        dingSfx.muted = true;
-        buzzerSfx.muted = true;
-    }
+    sounds.forEach(sound => sound.muted = !muted);
+    muted = !muted;
 }
 
 function startSettingLetter(target) {
@@ -212,6 +242,10 @@ function shuffle(array) {
     return array;
 }
 
+function clearInfo() {
+    infobox.innerText = '';
+}
+
 function revealMatchingLetters(targetLetter) {
     let i = 0;
     let foundAny = false;
@@ -220,8 +254,8 @@ function revealMatchingLetters(targetLetter) {
 
     shuffledLetters.forEach(letter => {
         if (letter.firstElementChild.innerText === targetLetter && letter.firstElementChild.style.color == 'white') {
-            window.setTimeout(() => blueLetter(letter), i * dingLength);
-            window.setTimeout(() => revealLetter(letter), i * dingLength + revealTimeAfterDing);
+            timeouts.push(window.setTimeout(() => blueLetter(letter), i * dingLength));
+            timeouts.push(window.setTimeout(() => revealLetter(letter), i * dingLength + revealTimeAfterDing));
             i++;
             foundAny = true;
         }
@@ -234,7 +268,7 @@ function revealMatchingLetters(targetLetter) {
 
     infobox.innerText = `Revealing ${i} ${targetLetter}'s...`;
 
-    window.setTimeout(() => infobox.innerText = '', (i - 1) * dingLength + revealTimeAfterDing);
+    timeouts.push(window.setTimeout(clearInfo, (i - 1) * dingLength + revealTimeAfterDing));
 }
 
 function assignLetter(letterElement, char) {

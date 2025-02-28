@@ -132,15 +132,26 @@ body {
     background-color: gray;
 }
 
-#save-container {
+.save-container {
     position: fixed;
     top: 0;
     right: 0;
     width: 55px;
     height: 100vh;
 
+    padding: 0 10px;
+
     background-color: rgba(0, 0, 0, 0.5);
 
+    display: flex;
+    flex-direction: column;
+    
+    justify-content: center;
+    align-items: center;
+}
+
+#save-slot-container {
+    width: 100%;
     display: flex;
     flex-direction: column;
     
@@ -171,11 +182,23 @@ body {
     font-weight: bold;
 }
 
+.banner-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 22vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .category-banner {
     background-image: url('assets/category_banner.png');
-    background-size: contain;
+    background-size: cover;
+    background-position: center;
 
-    position: absolute;
     width: 60vw;
     height: 6vw;
     bottom: 5vh;
@@ -185,6 +208,10 @@ body {
 
     justify-content: center;
     align-items: center;
+
+    transition: width 1s ease-out;
+
+    overflow: hidden;
 }
 
 #category-label::placeholder {
@@ -204,10 +231,26 @@ body {
 
     text-shadow: 0 0 5px black;
 
-    width: 100%;
+    width: 60vw;
     height: 2vw;
 
     text-align: center;
 
     color: white;
+}
+
+.version-text {
+    position: fixed;
+    top: 0;
+    right: 0;
+
+    padding: 5px;
+    background-color: black;
+    opacity: 0.5;
+    border-radius: 5px;
+    color: white;
+
+    font-size: 10pt;
+
+    text-decoration: none;
 }
