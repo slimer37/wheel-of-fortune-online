@@ -209,8 +209,6 @@ body {
     justify-content: center;
     align-items: center;
 
-    transition: width 1s ease-out;
-
     overflow: hidden;
 }
 
