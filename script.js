@@ -148,6 +148,8 @@ function loadBoard(key) {
     }
 
     categoryLabel.value = getCookie(`category${key}`);
+
+    hideSolution();
 }
 
 function toggleMute() {
