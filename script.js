@@ -139,9 +139,12 @@ function saveBoard(key) {
 
 function loadBoard(key) {
     let puzzle = getCookie(`puzzle${key}`);
-    puzzle = puzzle.substring(1, puzzle.length - 1);
 
     if (puzzle === null) return;
+    
+    puzzle = puzzle.substring(1, puzzle.length - 1);
+
+    if (puzzle.trim() == '') return;
 
     for (let i = 0; i < puzzle.length; i++) {
         assignLetter(letterList[i], puzzle[i]);
