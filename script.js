@@ -12,6 +12,11 @@ let slotElements = [];
 
 const dingSfx = new Audio('assets/ding.wav');
 const buzzerSfx = new Audio('assets/buzzer.mp3');
+const revealSfx = new Audio('assets/puzzlereveal.mp3');
+
+const sounds = [dingSfx, buzzerSfx, revealSfx];
+let muted = false;
+
 const dingLength = 1.2 * 1000;
 const revealTimeAfterDing = 1.5 * 1000;
 
@@ -153,6 +158,8 @@ function loadBoard(key) {
     categoryLabel.value = getCookie(`category${key}`);
 
     if (document.getElementById('load-hidden-toggle').checked) {
+        revealSfx.currentTime = 0;
+        revealSfx.play();
         hideSolution();
     } else {
         revealSolution();
@@ -160,13 +167,8 @@ function loadBoard(key) {
 }
 
 function toggleMute() {
-    if (dingSfx.muted) {
-        dingSfx.muted = false;
-        buzzerSfx.muted = false;
-    } else {
-        dingSfx.muted = true;
-        buzzerSfx.muted = true;
-    }
+    sounds.forEach(sound => sound.muted = !muted);
+    muted = !muted;
 }
 
 function startSettingLetter(target) {
